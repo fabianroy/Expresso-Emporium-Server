@@ -6,7 +6,9 @@ const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 // middleware
 
-app.use(cors());
+app.use(cors({
+    origin: 'https://expresso-emporium.web.app/'
+}));
 app.use(express.json());
 
 // adding mongodb connection
@@ -100,7 +102,7 @@ async function run() {
 
         app.patch('/user', async (req, res) => {
             const user = req.body;
-            const filter = {email : user.email};
+            const filter = { email: user.email };
             const options = { upsert: true };
             const updatedDoc = {
                 $set: {
