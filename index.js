@@ -27,6 +27,7 @@ async function run() {
         await client.connect();
 
         const coffeeCollection = client.db('expressoDB').collection('coffee');
+        const userCollection = client.db('expressoDB').collection('users');
 
         app.get('/coffee', async (req, res) => {
             const cursor = coffeeCollection.find();
@@ -72,6 +73,48 @@ async function run() {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) };
             const result = await coffeeCollection.deleteOne(query);
+            res.send(result);
+        });
+
+
+        // User routes
+
+        app.get('/user', async (req, res) => {
+            const cursor = userCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
+        });
+
+        app.get('/user/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await userCollection.findOne(query);
+            res.send(result);
+        });
+
+        app.post('/user', async (req, res) => {
+            const user = req.body;
+            const result = await userCollection.insertOne(user);
+            res.send(result);
+        })
+
+        app.patch('/user', async (req, res) => {
+            const user = req.body;
+            const filter = {email : user.email};
+            const options = { upsert: true };
+            const updatedDoc = {
+                $set: {
+                    lastSignInTime: user.lastSignInTime
+                }
+            }
+            const result = await userCollection.updateOne(filter, updatedDoc, options);
+            res.send(result);
+        })
+
+        app.delete('/user/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await userCollection.deleteOne(query);
             res.send(result);
         });
 
