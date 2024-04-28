@@ -6,9 +6,13 @@ const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 // middleware
 
-app.use(cors({
-    origin: 'https://expresso-emporium.web.app/'
-}));
+const corsOptions = {
+    origin: ['http://localhost:5173', 'https://expresso-emporium.web.app'],
+    credentials: true,
+    optionSuccessStatus: 200,
+    }
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // adding mongodb connection
